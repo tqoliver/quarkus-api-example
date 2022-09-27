@@ -1,8 +1,8 @@
 schemaVersion: 2.1.0
 metadata:
-  generateName: quarkus-api-example
+  generateName: quarkus-api-example-demo
 attributes:
-  controller.devfile.io/storage-type: ephemeral
+  controller.devfile.io/scc: container-build
 components:
   - name: tools
     container:
@@ -20,18 +20,7 @@ components:
           protocol: http
           targetPort: 8080
           path: /food
-      volumeMounts:
-        - name: m2
-          path: /home/user/.m2
       memoryLimit: 6G
-      mountSources: true
-
-  - name: ubi-minimal
-    container:
-      image: registry.access.redhat.com/ubi8/ubi-minimal
-      command: ['tail']
-      args: ['-f', '/dev/null']
-      memoryLimit: 64M
       mountSources: true
 
   - name: postgresql
@@ -46,16 +35,22 @@ components:
           value: food_db
         - name: PGDATA
           value: /tmp/pgdata
-  - name: m2
-    volume:
-      size: 1G
+
+  - name: ubi-minimal
+    container:
+      image: registry.access.redhat.com/ubi8/ubi-minimal
+      command: ['tail']
+      args: ['-f', '/dev/null']
+      memoryLimit: 64M
+      mountSources: true
+
 commands:
   - id: package
     exec:
       label: "Package"
       component: tools
       workingDir: ${PROJECTS_ROOT}/quarkus-api-example
-      commandLine: "./mvnw clean package -DskipTests=true"
+      commandLine: "./mvnw clean package -DskipTests=true -Dquarkus.profile=staging"
       group:
         kind: build
         isDefault: true
@@ -72,7 +67,23 @@ commands:
       label: "Package Native"
       component: tools
       workingDir: ${PROJECTS_ROOT}/quarkus-api-example
-      commandLine: "./mvnw package -Dnative -Dmaven.test.skip -Dquarkus.native.native-image-xmx=3G"
+      commandLine: "./mvnw package -Dnative -Dmaven.test.skip -Dquarkus.native.native-image-xmx=3G  -Dquarkus.profile=staging"
+      group:
+        kind: build
+  - id: buildimage
+    exec:
+      label: "Build Image"
+      component: tools
+      workingDir: ${PROJECTS_ROOT}/quarkus-api-example
+      commandLine: "podman build -f src/main/docker/Dockerfile.jvm -t image-registry.openshift-image-registry.svc:5000/openshift/quarkus-api-example ."
+      group:
+        kind: build
+  - id: pushimage
+    exec:
+      label: "Push Image"
+      component: tools
+      workingDir: ${PROJECTS_ROOT}/quarkus-api-example
+      commandLine: "podman push --tls-verify=false image-registry.openshift-image-registry.svc:5000/openshift/quarkus-api-example"
       group:
         kind: build
   - id: startdev
@@ -105,6 +116,6 @@ commands:
       label: "Deploy Postrgres"
       component: tools
       workingDir: ${PROJECTS_ROOT}/quarkus-api-example
-      commandLine: "oc new-app -e POSTGRESQL_USER=user -e POSTGRESQL_PASSWORD=password -e POSTGRESQL_DATABASE=food_db postgresql:10-el7 -n demo"
+      commandLine: "oc new-app -e POSTGRESQL_USER=user -e POSTGRESQL_PASSWORD=password -e POSTGRESQL_DATABASE=food_db postgresql:10-el7"
       group:
         kind: test
