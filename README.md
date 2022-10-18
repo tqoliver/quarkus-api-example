@@ -15,11 +15,7 @@ NOTE: Perfoming a native Quarkus build with the `packagenative` command fails on
 | `GET`  | `/food/restaurant/{restaurantName}` | Lists all Food resources with the specified restaurantName |
 | `POST` | `/food`                             | Creates a Food resource                                    |
 
-## Local development
-### Create PostgresSQL container
-```
-docker run -it --rm=true --name food_db -e POSTGRESQL_USER=user -e POSTGRESQL_PASSWORD=password -e POSTGRESQL_DATABASE=food_db -p 5432:5432 quay.io/centos7/postgresql-13-centos7@sha256:994f5c622e2913bda1c4a7fa3b0c7e7f75e7caa3ac66ff1ed70ccfe65c40dd75
-```
+## Running within Dev Spaces
 
 ### Run in development mode
 ```
