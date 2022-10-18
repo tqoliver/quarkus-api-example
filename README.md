@@ -27,14 +27,42 @@ docker run -it --rm=true --name food_db -e POSTGRESQL_USER=user -e POSTGRESQL_PA
 ```
 Navigate to `localhost:8080/food` to view the [pre-imported](https://github.com/che-incubator/quarkus-api-example/blob/main/src/main/resources/import.sql) `Food` resources.
 
+
+### Run tests only
+```
+./mvnw test
+```
+
 ### Packaging the application
 ```
 ./mvnw clean package
 ```
 
-### Run tests only
+### Building a JVM-based image
+
+To build a JVM-based image, `./mvnw clean package` but be run beforehand.
+
+To build an image, run:
 ```
-./mvnw test
+IMG=<IMAGE> && \
+podman build -f src/main/docker/Dockerfile.jvm -t $IMG .
+```
+
+To build and push to the local local OpenShift registry, run the following before building:
+```
+podman login --tls-verify=false -u kubeadmin -p $(oc whoami -t) image-registry.openshift-image-registry.svc:5000 && \
+IMG=image-registry.openshift-image-registry.svc:5000/openshift/quarkus-api-example
+```
+
+### Pushing an image
+To push an image, run:
+```
+podman push $IMG
+```
+
+To push an image to the local OpenShift registry, run:
+```
+podman push --tls-verify=false $IMG
 ```
 
 ## Resources
