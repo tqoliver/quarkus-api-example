@@ -20,9 +20,6 @@ components:
           protocol: http
           targetPort: 8080
           path: /food
-      volumeMounts:
-        - name: m2
-          path: /home/user/.m2
       memoryLimit: 6G
       mountSources: true
 
@@ -46,9 +43,6 @@ components:
       args: ['-f', '/dev/null']
       memoryLimit: 64M
       mountSources: true
-  - name: m2
-    volume:
-      size: 1G
 commands:
   - id: package
     exec:
