@@ -79,7 +79,7 @@ commands:
         kind: build
   - id: loginlocalregistry
     exec:
-      label: "Login to local OpenShift registry"
+      label: "Login to Quay.io registry"
       component: tools
       workingDir: ${PROJECT_SOURCE}
       commandLine: "podman login -u='toliver+pushman' -p='KG76NP0R38BD4NSYUQMTG6BZ8UVWB6UQJTX3YIVPDDQ4384P5Y7WM3XA7GLVRRUS' quay.io"
