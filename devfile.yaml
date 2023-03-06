@@ -74,7 +74,7 @@ commands:
       label: "Build Image"
       component: tools
       workingDir: ${PROJECT_SOURCE}
-      commandLine: "podman build -f src/main/docker/Dockerfile.jvm -t image-registry.openshift-image-registry.svc:5000/openshift/quarkus-api-example ."
+      commandLine: "podman build -f src/main/docker/Dockerfile.jvm -t quay.io/toliver/rhugq12023/quarkus-api-example ."
       group:
         kind: build
   - id: loginlocalregistry
@@ -82,7 +82,7 @@ commands:
       label: "Login to local OpenShift registry"
       component: tools
       workingDir: ${PROJECT_SOURCE}
-      commandLine: "podman login --tls-verify=false -u kubeadmin -p $(oc whoami -t) image-registry.openshift-image-registry.svc:5000"
+      commandLine: "podman login -u='toliver+pushman' -p='KG76NP0R38BD4NSYUQMTG6BZ8UVWB6UQJTX3YIVPDDQ4384P5Y7WM3XA7GLVRRUS' quay.io"
       group:
         kind: run
   - id: pushimage
@@ -90,7 +90,7 @@ commands:
       label: "Push Image"
       component: tools
       workingDir: ${PROJECT_SOURCE}
-      commandLine: "podman push --tls-verify=false image-registry.openshift-image-registry.svc:5000/openshift/quarkus-api-example"
+      commandLine: "podman push --tls-verify=false quay.io/toliver/rhugq12023/quarkus-api-example"
       group:
         kind: build
   - id: startdev
