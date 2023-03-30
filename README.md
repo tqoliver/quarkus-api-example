@@ -23,6 +23,7 @@ NOTE: Perfoming a native Quarkus build with the `packagenative` command fails on
 ```
 Navigate to `localhost:8080/food` to view the [pre-imported](https://github.com/che-incubator/quarkus-api-example/blob/main/src/main/resources/import.sql) `Food` resources.
 
+Made a change for the awesome HNB folks
 
 ### Run tests only
 ```
